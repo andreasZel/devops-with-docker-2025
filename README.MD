@@ -111,17 +111,53 @@ docker image prune
 
 ## Running Containers
 
-We can run containers in the current terminal, blocking any
-input or use the `-d` flag to run it as `detatched`, meaning it will run in the background:
+We can run containers in the current terminal, blocking any input.
 
 ```bash
-docker run <container_id>
-
-# or in the background
-
 docker run -d <container_id>
 ```
+
+Flags:
+
+- `-it` flag.
+  We can use the `-it` flag to run it as `interactive` meaning we can pass commands to it, the `-t` flag also created a `tty`, or a virtual terminal, combining this we can have a terminal to interact with:
+
+```bash
+docker run -it <container_id>
+```
+
+- `-d` flag.
+  We can use the `-d` flag to run it as `detatched`, meaning it will run in the background:
+
+```bash
+docker run -d <container_id>
+```
+
+- `--name` flag.
+  We can name the container using this flag.
+
+We can also pass some command after the image name or id like:
+
+```bash
+$ docker run -d -it --name looper ubuntu sh -c "while true; do date; sleep 1; done"
+```
+
+### Logs in Container
+
+We can see the `logs` of our container using `docker logs -f <container name | id>`.
+
+### Pause/Unpause a Container
+
+We pause or unpause a container usning `docker pause <container name | id>` or `docker unpause <container name | id>`.
+
+## Attach a Terminal
+
+We can attach a terminal using `docker attach <container name | id>`
+
+<br />
 
 # Basic commands
 
 <table><thead><tr><th >command</th><th >explain</th><th >shorthand</th></tr></thead><tbody><tr><td ><code>docker image ls</code></td><td >Lists all images</td><td ><code>docker images</code></td></tr><tr><td ><code>docker image rm &lt;image&gt;</code></td><td >Removes an image</td><td ><code>docker rmi</code></td></tr><tr><td ><code>docker image pull &lt;image&gt;</code></td><td >Pulls image from a docker registry</td><td ><code>docker pull</code></td></tr><tr><td ><code>docker container ls -a</code></td><td >Lists all containers</td><td ><code>docker ps -a</code></td></tr><tr><td ><code>docker container run &lt;image&gt;</code></td><td >Runs a container from an image</td><td ><code>docker run</code></td></tr><tr><td ><code>docker container rm &lt;container&gt;</code></td><td >Removes a container</td><td ><code>docker rm</code></td></tr><tr><td ><code>docker container stop &lt;container&gt;</code></td><td >Stops a container</td><td ><code>docker stop</code></td></tr><tr><td ><code>docker container exec &lt;container&gt;</code></td><td >Executes a command inside the container&nbsp;</td><td ><code>docker exec</code></td></tr></tbody><tfoot></tfoot><captionF></caption></table>
+
+<br />
