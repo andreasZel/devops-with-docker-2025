@@ -76,6 +76,7 @@ As we said Dockerfile contains the instructions for the image we want to create,
 2. `WORKDIR <directory>` the directory the insructions will be executed.
 3. `COPY <filename> <directory file is in>` copies a file from the directory specified to the `WORKDIR`.
 4. `CMD <command>` a command that will be executed when the container starts.
+   - If an `ENTYPOINT` is set on an Image, `CMD` passes the **default parameters** to it.
 
 a basic example would be:
 
