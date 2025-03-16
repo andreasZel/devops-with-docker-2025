@@ -46,6 +46,8 @@ this gets the image on the first time and runs the container. After that there i
 
 ### Image
 
+A typical image format is as follows: `registry/organisation/image:tag`
+
 Image is a file that cannot be changed. They are `Immutable`. You can create new images from a base image and adding layers to it, this type of file is called `DockerFile`.
 
 A typical `DockerFile` is made from some basic instructions, such as:
@@ -63,6 +65,86 @@ we can `list` images with:
 ```bash
 docker image ls
 ```
+
+### Docker File
+
+### Construction of a Dockerfile
+
+As we said Dockerfile contains the instructions for the image we want to create, some of them are:
+
+1. `FROM <image>:<tag>` the image it starts from.
+2. `WORKDIR <directory>` the directory the insructions will be executed.
+3. `COPY <filename> <directory file is in>` copies a file from the directory specified to the `WORKDIR`.
+4. `CMD <command>` a command that will be executed when the container starts.
+
+a basic example would be:
+
+```docker
+# Start from the alpine image that is smaller but no fancy tools
+FROM alpine:3.21
+
+# Use /usr/src/app as our workdir. The following instructions will be executed in this location.
+WORKDIR /usr/src/app
+
+# Copy the hello.sh file from this directory to /usr/src/app/ creating /usr/src/app/hello.sh
+COPY hello.sh .
+
+# Add execution permissions during the build.
+RUN chmod +x hello.sh
+
+# When running docker run the command will be ./hello.sh
+CMD ./hello.sh
+```
+
+### Creating an Image from a Dockerfile
+
+To create the image we use `docker build <build location>`
+Docker build, search for a Dockerfile and builds it in the specified location.
+
+We can also use the `-t <image name>` flag to name our image. An example would be:
+
+```bash
+# build a Dockerfile in the current dir and name it hello-docker
+docker build . -t hello-docker
+```
+
+<hr />
+
+\*\* **Common Error** \*\*
+
+If we get a message such as "/bin/sh: ./hello.sh: not found", there is an error with the `line endings`. If we use `UNIX` we have to change our line endings to `LF` and save. As a rule of thumb:
+
+1. Windows -> `CRLF`
+1. Unix -> `LF`
+
+<hr />
+
+### Layers
+
+Each instruction is a `Layer`, if we already builded a Dockerfile, layers will be `cached`.
+
+So it is wise to construct our layers so that the `changes happens to the bottom layers` in order to make our builds faster.
+
+#### Adding layers while Container is running (Creating new Images)
+
+We can add layers after we run the container.
+
+For example we could:
+
+```bash
+touch additional.txt
+
+docker cp ./additional.txt <container id>:<path>
+
+# This will show
+#  A /usr/src/app/additional.txt
+docker diff <container id>
+
+# Creates a new Image from the commit
+docker commit <container id> <new image name>
+```
+
+It is generally considered good practise to just use Dockerfiles and version them, rather than commiting changes and creating new images.
 
 ### Container
 
@@ -142,6 +224,28 @@ We can also pass some command after the image name or id like:
 $ docker run -d -it --name looper ubuntu sh -c "while true; do date; sleep 1; done"
 ```
 
+- `--rm` flag.
+  Is a very usefull flag that ensures that there are no garbage containers left behind, otherwise we would have to:
+
+  - `docker kill <container_id>`
+  - `docker rm <container_id>`
+
+- `--no-stdin` flag.
+  Prevents an `attached` terminal from stopping if we `CNTRL + C`.
+
+<br />
+
+A basic command we run is:
+
+```bash
+$ docker run -d --rm -it --name <container name> <container image>
+```
+
+1. It uses `-d` to detach from current terminal.
+2. It uses `--rm` to remove garbage containers after it is exited.
+3. It uses `-it` so we can interract with it if we want.
+4. It names it with `--name`
+
 ### Logs in Container
 
 We can see the `logs` of our container using `docker logs -f <container name | id>`.
@@ -150,9 +254,25 @@ We can see the `logs` of our container using `docker logs -f <container name | i
 
 We pause or unpause a container usning `docker pause <container name | id>` or `docker unpause <container name | id>`.
 
-## Attach a Terminal
+## Attach a Container to a Terminal
 
-We can attach a terminal using `docker attach <container name | id>`
+We can attach a terminal using `docker attach <container name | id>`.
+
+### Detach us form STDOUT
+
+if we didn't use the `--no-stdin` flag, we can press `control+p, control+q` to detach us from STDOUT
+
+<br />
+
+# Running Commands in a Container
+
+We run commands in a Container using `docker exec <container name | id>`.
+
+For example we could start a bash session using:
+
+```bash
+docker exec -it looper bash
+```
 
 <br />
 
@@ -161,3 +281,14 @@ We can attach a terminal using `docker attach <container name | id>`
 <table><thead><tr><th >command</th><th >explain</th><th >shorthand</th></tr></thead><tbody><tr><td ><code>docker image ls</code></td><td >Lists all images</td><td ><code>docker images</code></td></tr><tr><td ><code>docker image rm &lt;image&gt;</code></td><td >Removes an image</td><td ><code>docker rmi</code></td></tr><tr><td ><code>docker image pull &lt;image&gt;</code></td><td >Pulls image from a docker registry</td><td ><code>docker pull</code></td></tr><tr><td ><code>docker container ls -a</code></td><td >Lists all containers</td><td ><code>docker ps -a</code></td></tr><tr><td ><code>docker container run &lt;image&gt;</code></td><td >Runs a container from an image</td><td ><code>docker run</code></td></tr><tr><td ><code>docker container rm &lt;container&gt;</code></td><td >Removes a container</td><td ><code>docker rm</code></td></tr><tr><td ><code>docker container stop &lt;container&gt;</code></td><td >Stops a container</td><td ><code>docker stop</code></td></tr><tr><td ><code>docker container exec &lt;container&gt;</code></td><td >Executes a command inside the container&nbsp;</td><td ><code>docker exec</code></td></tr></tbody><tfoot></tfoot><captionF></caption></table>
 
 <br />
+
+## Tags in containers
+
+We can create a tag by typing `docker tag <image name>:<tag> <image name>:<new tag>`
+
+for examle:
+
+```bash
+# creates tag noble_numbat from 25.04
+docker tag ubuntu:25.04 ubuntu:noble_numbat
+```
