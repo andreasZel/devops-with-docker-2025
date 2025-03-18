@@ -214,6 +214,30 @@ docker containers ls -a
 docker ps -a
 ```
 
+## Copy files locally from Container
+
+We can copy files from our container using `docker cp` command, like:
+
+```bash
+docker cp "determined_elion://mydir/Welcome to Kumpula campus! ｜ University of Helsinki [DptFY_MszQs].mp4" .
+```
+
+## Persisting changes
+
+There are two ways to persist changes, one is `Bind Mounts` and other is `Volumes`.
+
+### Volumes (Bind Mounts)
+
+It allows us to add a directory from the `host's` machine to the `Container` and share it.
+
+To do so we can use the command line, and use the `-v <absolute path in host>:<path in container>` flag, running the container:
+
+```bash
+docker run -v "$(pwd):/mydir" yt-dlp https://www.youtube.com/watch?v=saEpkcVi1d4
+```
+
+This will output whatever it is on the container to /mydir. We could also use a `specific file` to write only to it.
+
 ## Removing Containers and Images
 
 To remove an Image we **HAVE TO** first delete any associated Containers.
