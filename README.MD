@@ -77,6 +77,59 @@ As we said Dockerfile contains the instructions for the image we want to create,
 3. `COPY <filename> <directory file is in>` copies a file from the directory specified to the `WORKDIR`.
 4. `CMD <command>` a command that will be executed when the container starts.
    - If an `ENTYPOINT` is set on an Image, `CMD` passes the **default parameters** to it.
+5. `ENTRYPOINT` is a way to **run a command but having the ability to `pass parameters to it`**. If no ENTRYPOINT is set `/bin/sh -c` is the ENTRYPOINT.
+
+   - We can pass parameters with `CMD` or by running the container. If both CMD and parameter is passed when running the container, CMD will be overriten. For example:
+
+     ```docker
+       FROM ubuntu:24.04
+
+       WORKDIR /mydir
+
+       RUN apt-get update && apt-get install -y curl python3
+       RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+       RUN chmod a+x /usr/local/bin/yt-dlp
+
+       ENTRYPOINT ["/usr/local/bin/yt-dlp"]
+
+       # define a default argument
+       CMD ["https://www.youtube.com/watch?v=Aa55RKWZxxI"]
+     ```
+
+     If we built it as example, running:
+
+     ```bash
+     # Overrides CMD in Dockerfile
+       docker run yt-dlp https://www.youtube.com/watch?v=DptFY_MszQs
+     ```
+
+   - There are also two ways to set ENTRYPOINT and CMD:
+
+     1. `exec` form. Basically, we call CMD and ENTRYPOINT with [], it runs the command itself:
+
+        ```docker
+        ENTRYPOINT ["/usr/local/bin/yt-dlp"]
+
+        CMD ["localhost"]
+        ```
+
+        So output command is:
+
+        ```bash
+          /usr/local/bin/yt-dlp /localhost
+        ```
+
+     2. `shell` form. The command is provided as a string without brackets, this runs the command by wrapping it with `/bin/sh -c`. So in the same example we would get:
+
+        ```bash
+          /bin/sh -c '/usr/local/bin/yt-dlp' /bin/sh -c 'localhost'
+        ```
+
+<br />
+
+<table><thead><tr><th >Dockerfile</th><th >Resulting command</th></tr></thead><tbody><tr><td >ENTRYPOINT /bin/ping -c 3<br>CMD localhost</td><td >/bin/sh -c '/bin/ping -c 3' /bin/sh -c localhost</td></tr><tr><td >ENTRYPOINT&nbsp;["/bin/ping","-c","3"]<br>CMD localhost</td><td >/bin/ping -c 3 /bin/sh -c localhost</td></tr><tr><td >ENTRYPOINT /bin/ping -c 3<br>CMD&nbsp;["localhost"]</td><td >/bin/sh -c '/bin/ping -c 3' localhost</td></tr><tr><td >ENTRYPOINT&nbsp;["/bin/ping","-c","3"]<br>CMD&nbsp;["localhost"]</td><td >/bin/ping -c 3 localhost</td></tr></tbody><tfoot></tfoot><caption ></caption></table>
+
+<br />
 
 a basic example would be:
 
