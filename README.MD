@@ -370,3 +370,48 @@ for examle:
 # creates tag noble_numbat from 25.04
 docker tag ubuntu:25.04 ubuntu:noble_numbat
 ```
+
+## Networking
+
+### Basic Concepts
+
+Programs can send messages to URL addresses, a typical URL is structured like:
+
+`http://127.0.0.1:3000`
+
+- **http:** is the `Protocol`
+- **127.0.0.1** is the `IP Adress`, this can also be a `hostname`
+- **3000** is the port
+
+Programs can be assigned to listen to any available port. If a program is listening for traffic on port 3000, and a message is sent to that port, the program will receive and possibly process it.
+
+### localhost
+
+`localhost` ot `127.0.0.1` always refers to the machime or container itself, we could map the port to exchange messages between container and host but by default id we send messages from container to localhost, it would mean we send messages to ourselfs.
+
+## Opening Connections from Outside World to Container
+
+The connection happens in two steps
+
+1. Expose port
+   - this means container will know which ports to listen to.
+   - we expose ports like this
+      ```docker
+      # in Dockerfile
+      EXPOSE <port>
+      ```
+2. Publish port
+   - this maps the outside ports to the containers ports.
+      ```bash
+      # in command line
+      docker run -p <host-port>:<container-port> <container-name> 
+      ```
+
+#### ** **WARNING** **
+
+Publishing a port like this opens the port to **everyone**, to only open the port from our computer to the application we can specify the **ip** like `-p 127.0.0.1:3456:3000`. 
+
+This happens because:
+
+<table><thead><tr><th >short syntax</th><th >translation</th></tr></thead><tbody><tr><td ><code>-p 3456:3000</code></td><td ><code>-p 0.0.0.0:3456:3000</code></td></tr><tr><td ><code>-p 127.0.0.1:3456:3000 </code></td><td ><code>-p 127.0.0.1:3456:3000</code></td></table>
+
