@@ -74,7 +74,7 @@ As we said Dockerfile contains the instructions for the image we want to create,
 
 1. `FROM <image>:<tag>` the image it starts from.
 2. `WORKDIR <directory>` the directory the insructions will be executed.
-3. `COPY <filename> <directory file is in>` copies a file from the directory specified to the `WORKDIR`.
+3. `COPY <source directory> <destination>` copies a file from the directory specified to the `WORKDIR` or current dir.
 4. `CMD <command>` a command that will be executed when the container starts.
    - If an `ENTYPOINT` is set on an Image, `CMD` passes the **default parameters** to it.
 5. `ENTRYPOINT` is a way to **run a command but having the ability to `pass parameters to it`**. If no ENTRYPOINT is set `/bin/sh -c` is the ENTRYPOINT.
@@ -396,22 +396,21 @@ The connection happens in two steps
 1. Expose port
    - this means container will know which ports to listen to.
    - we expose ports like this
-      ```docker
-      # in Dockerfile
-      EXPOSE <port>
-      ```
+     ```docker
+     # in Dockerfile
+     EXPOSE <port>
+     ```
 2. Publish port
    - this maps the outside ports to the containers ports.
-      ```bash
-      # in command line
-      docker run -p <host-port>:<container-port> <container-name> 
-      ```
+     ```bash
+     # in command line
+     docker run -p <host-port>:<container-port> <container-name>
+     ```
 
-#### ** **WARNING** **
+#### \*\* **WARNING** \*\*
 
-Publishing a port like this opens the port to **everyone**, to only open the port from our computer to the application we can specify the **ip** like `-p 127.0.0.1:3456:3000`. 
+Publishing a port like this opens the port to **everyone**, to only open the port from our computer to the application we can specify the **ip** like `-p 127.0.0.1:3456:3000`.
 
 This happens because:
 
 <table><thead><tr><th >short syntax</th><th >translation</th></tr></thead><tbody><tr><td ><code>-p 3456:3000</code></td><td ><code>-p 0.0.0.0:3456:3000</code></td></tr><tr><td ><code>-p 127.0.0.1:3456:3000 </code></td><td ><code>-p 127.0.0.1:3456:3000</code></td></table>
-
