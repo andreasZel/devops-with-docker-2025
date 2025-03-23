@@ -414,3 +414,19 @@ Publishing a port like this opens the port to **everyone**, to only open the por
 This happens because:
 
 <table><thead><tr><th >short syntax</th><th >translation</th></tr></thead><tbody><tr><td ><code>-p 3456:3000</code></td><td ><code>-p 0.0.0.0:3456:3000</code></td></tr><tr><td ><code>-p 127.0.0.1:3456:3000 </code></td><td ><code>-p 127.0.0.1:3456:3000</code></td></table>
+
+## Publishing Projects
+
+We can bublish images in `https://hub.docker.com/`, if we create an account, we can login using:
+
+```bash
+docker login
+```
+
+and tag and publish an image with:
+
+```bash
+docker tag <image_name> <username>/<repository>
+
+docker push <username>/<repository>
+```
