@@ -458,7 +458,12 @@ and run as `$ docker compose run <service-name> <params>`
 
 ## Volumes
 
-We can define volumes by specifying them with `<location-in-host>:<location-in-container> `
+We can define volumes by specifying them with
+
+```docker
+  volumes:
+    - <location-in-host>:<location-in-container>
+```
 
 ## Ready image
 
