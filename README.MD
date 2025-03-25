@@ -452,6 +452,18 @@ services:
     container_name: <container-name>
 ```
 
+<br />
+
+---
+
+\*\* **IMPORTANT NOTE** \*\*
+
+Keep in mind that the **Tree structure has to be kept**, so `volume` and `image` have to be **leafs** of the `service`!
+
+---
+
+<br />
+
 Here, `build` is used to build an image in the current dir `.` that has the Dockerfile.
 
 and run as `$ docker compose run <service-name> <params>`
