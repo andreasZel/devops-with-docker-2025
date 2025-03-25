@@ -456,6 +456,10 @@ Here, `build` is used to build an image in the current dir `.` that has the Dock
 
 and run as `$ docker compose run <service-name> <params>`
 
+## Volumes
+
+We can define volumes by specifying them with `<location-in-host>:<location-in-container> `
+
 ## Ready image
 
 In image we can use an existing one by just putting the image name
