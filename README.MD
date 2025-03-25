@@ -430,3 +430,56 @@ docker tag <image_name> <username>/<repository>
 
 docker push <username>/<repository>
 ```
+
+# Docker Compose
+
+Docker compose is a tool for managing and building and running multiple containers using a single command:
+
+```bash
+docker compose [-f <arg>...] [options] [COMMAND] [ARGS...]
+```
+
+a docker compose file has the `.yml` extension and is generally
+defined as:
+
+```docker
+services:
+  <service-name>:
+    image: <username>/<repositoryname>
+    build: .
+    volumes:
+      - .:/mydir
+    container_name: <container-name>
+```
+
+Here, `build` is used to build an image in the current dir `.` that has the Dockerfile.
+
+and run as `$ docker compose run <service-name> <params>`
+
+## Ready image
+
+In image we can use an existing one by just putting the image name
+
+```docker
+services:
+  nginx:
+    image: nginx:1.27
+  database:
+    image: postgres:17
+```
+
+## Run, Stop and Remove running Services
+
+```bash
+# Run the services
+docker compose up
+
+# Stop Services
+docker compose down
+
+# Monitor containers
+docker compose logs
+
+# List all running Services
+docker compose ps
+```
