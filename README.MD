@@ -471,7 +471,7 @@ and run as `$ docker compose run <service-name> <params>`
 # Commands
 
 we can run commands as we did `CMD` in the Dockerfile, just
-type
+type:
 
 ```docker
   #services:
@@ -479,6 +479,20 @@ type
       # image: <image-name>
       command: <command-to-run>
 ```
+
+# Exposing Ports
+
+ports can also be exposed by typing:
+
+```docker
+  #services:
+  # <service-name>
+      # image: <image-name>
+      ports:
+       - <port-in-host>:<port-in-container>
+```
+
+it's the same as typing `-p <port-in-host>:<port-in-container>` in docker run. Again **Be aware of tree struncture**.
 
 ## Volumes
 
