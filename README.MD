@@ -516,3 +516,7 @@ docker compose logs
 # List all running Services
 docker compose ps
 ```
+
+## flags
+
+flags can be added after `up`, so we do `docker compose up [flags]`
