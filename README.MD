@@ -468,6 +468,18 @@ Here, `build` is used to build an image in the current dir `.` that has the Dock
 
 and run as `$ docker compose run <service-name> <params>`
 
+# Commands
+
+we can run commands as we did `CMD` in the Dockerfile, just
+type
+
+```docker
+  #services:
+  # <service-name>
+      # image: <image-name>
+      command: <command-to-run>
+```
+
 ## Volumes
 
 We can define volumes by specifying them with
