@@ -387,7 +387,7 @@ Programs can be assigned to listen to any available port. If a program is listen
 
 ### localhost
 
-`localhost` ot `127.0.0.1` always refers to the machime or container itself, we could map the port to exchange messages between container and host but by default id we send messages from container to localhost, it would mean we send messages to ourselfs.
+`localhost` or `127.0.0.1` always refers to the machime or container itself, we could map the port to exchange messages between container and host but by default id we send messages from container to localhost, it would mean we send messages to ourselfs.
 
 ## Opening Connections from Outside World to Container
 
@@ -534,3 +534,9 @@ docker compose ps
 ## flags
 
 flags can be added after `up`, so we do `docker compose up [flags]`
+
+## Networking in Docker Compose
+
+`Docker network` automatically creates joins between services.
+
+Services in `.yml` files are automatically joined into a network using `DNS` each service is given a name as pecified in the file.
