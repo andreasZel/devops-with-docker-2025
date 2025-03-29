@@ -1,0 +1,15 @@
+services:
+  front:
+    build: 
+      dockerfile: ./DockerfileFront
+    ports:
+      - 5000:5000
+  back:
+    build: 
+      dockerfile: ./DockerfileBack
+    ports:
+      - 8080:8080
+    environment:
+      - REDIS_HOST=redis
+  redis:
+    image: redis
