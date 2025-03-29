@@ -480,6 +480,17 @@ type:
       command: <command-to-run>
 ```
 
+** Useful Commands **
+
+restart defines the policy that the platform applies on container termination.
+
+`restart: <"no", always, on-failure, on-failure:number, unless-stopped>`
+
+- `no`: The default restart policy. It does not restart the container under any circumstances.
+- `always`: The policy always restarts the container until its removal.
+- `on-failure[:max-retries]`: The policy restarts the container if the exit code indicates an error. Optionally, limit the number of restart retries the Docker daemon attempts.
+- `unless-stopped`: The policy restarts the container irrespective of the exit code but stops restarting when the service is stopped or removed.
+
 # Exposing Ports
 
 ports can also be exposed by typing:
