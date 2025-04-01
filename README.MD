@@ -590,7 +590,7 @@ networks:
 
 ### Scaling
 
-Docker compose also allows scaling, we can scale up using the `--scale` flag.
+Docker compose also allows scaling, we can scale up using the `--scale` flag. This runs multiple instances of a service specified.
 
 If we specify a port to bind in .yml file, the the scale will fail because all instances will attempt to bind to the specfied port.
 
