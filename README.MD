@@ -551,3 +551,68 @@ flags can be added after `up`, so we do `docker compose up [flags]`
 `Docker network` automatically creates joins between services.
 
 Services in `.yml` files are automatically joined into a network using `DNS` each service is given a name as pecified in the file.
+
+### Manual Define a network
+
+We can manually define a network by define `networks`, we could do it as:
+
+```docker
+services:
+  db:
+    image: postgres:13.2-alpine
+    networks:
+      - database-network 
+
+networks:
+  database-network: 
+    name: database-network 
+
+```
+
+external could be defined by using `external`, so we could change:
+
+```docker
+networks:
+  database-network: 
+    external: # added external
+      name: database-network 
+```
+
+**By default all services are added to** `default` network, we could change it so that it can connect to external networks **By default**:
+
+```docker
+networks:
+  default: # added default
+    database-network: 
+      external: 
+        name: database-network 
+```
+
+### Scaling
+
+Docker compose also allows scaling, we can scale up using the `--scale` flag.
+
+If we specify a port to bind in .yml file, the the scale will fail because all instances will attempt to bind to the specfied port.
+
+To avoid that we can just `not define` it and docker will  **automatically choose a free port**.
+
+#### View and use scaled container ports
+
+To view the used ports we can use `docker compose port`, this index each port used. Then to use it we can `curl them`:
+
+```bash
+docker compose port --index 1 whoami 8000
+  # shows 0.0.0.0:32770
+
+docker compose port --index 2 whoami 8000
+  # shows 0.0.0.0:32769
+
+docker compose port --index 3 whoami 8000
+  # shows 0.0.0.0:32768
+
+curl 127.0.0.1:32769
+  # shows I'm 536e11304357
+
+curl 127.0.0.1:32768
+  # shows I'm 1ae20cd990f7
+```
