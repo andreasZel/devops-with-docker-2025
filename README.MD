@@ -514,6 +514,9 @@ We can define volumes by specifying them with
     - <location-in-host>:<location-in-container>
 ```
 
+- we can list them with `docker volume ls`
+- we can delete them with `docker volume prune`
+
 ## Ready image
 
 In image we can use an existing one by just putting the image name
@@ -561,11 +564,11 @@ services:
   db:
     image: postgres:13.2-alpine
     networks:
-      - database-network 
+      - database-network
 
 networks:
-  database-network: 
-    name: database-network 
+  database-network:
+    name: database-network
 
 ```
 
@@ -573,9 +576,9 @@ external could be defined by using `external`, so we could change:
 
 ```docker
 networks:
-  database-network: 
+  database-network:
     external: # added external
-      name: database-network 
+      name: database-network
 ```
 
 **By default all services are added to** `default` network, we could change it so that it can connect to external networks **By default**:
@@ -583,9 +586,9 @@ networks:
 ```docker
 networks:
   default: # added default
-    database-network: 
-      external: 
-        name: database-network 
+    database-network:
+      external:
+        name: database-network
 ```
 
 ### Scaling
@@ -594,7 +597,7 @@ Docker compose also allows scaling, we can scale up using the `--scale` flag. Th
 
 If we specify a port to bind in .yml file, the the scale will fail because all instances will attempt to bind to the specfied port.
 
-To avoid that we can just `not define` it and docker will  **automatically choose a free port**.
+To avoid that we can just `not define` it and docker will **automatically choose a free port**.
 
 #### View and use scaled container ports
 
@@ -619,11 +622,11 @@ curl 127.0.0.1:32768
 
 ** Nginx Config **
 
-To setup Nginx we have to 
+To setup Nginx we have to
 
-- get nginx proxy image 
+- get nginx proxy image
 - mount `docker.sock` (opens in a new tab) of our host machine (`the socket that is used to communicate with the Docker Daemon`) inside of the container in :ro read-only mode
-- use a port 
+- use a port
 
 We also have to use `VIRTUAL_HOST` env variable, we can use some `domain` which `all subdomains point to localhost`, like `colasloth.com`.
 
@@ -656,4 +659,21 @@ world:
     - ./world.html:/usr/share/nginx/html/index.html:ro
   environment:
     - VIRTUAL_HOST=world.colasloth.com
+```
+
+## Making sure a service starts first
+
+we can use `depends_on:` instruction by providing a service name to specify we want it to start first:
+
+```docker
+redmine:
+  image: redmine:5.1-alpine
+  environment:
+    - REDMINE_DB_POSTGRES=db
+    - REDMINE_DB_PASSWORD=example
+  ports:
+    - 9999:3000
+    # db will start first
+  depends_on:
+    - db
 ```
