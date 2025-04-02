@@ -1,0 +1,28 @@
+services:
+  front:
+    build: 
+      dockerfile: ./DockerfileFront
+    ports:
+      - 5000:5000
+  back:
+    build: 
+      dockerfile: ./DockerfileBack
+    ports:
+      - 8080:8080
+    environment:
+      REDIS_HOST: redis
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DATABASE: postgres
+    depends_on:
+    - db
+  redis:
+    image: redis
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    container_name: db_redmine
