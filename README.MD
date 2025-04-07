@@ -719,7 +719,7 @@ We can create deployment pipelines using
 
 ### 1. Github Actions
 
-We can define workflows in the **_main.yml_** of the **_.github/workflows_** directory:
+We can define workflows in the **main.yml** of the **.github/workflows** directory:
 
 ```docker
 name: Build and Push Docker Image
