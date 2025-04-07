@@ -200,6 +200,22 @@ docker commit <container id> <new image name>
 
 It is generally considered good practise to just use Dockerfiles and version them, rather than commiting changes and creating new images.
 
+\*\* **Tip** \*\*
+
+We can use `ADD` instruction in Dockerfile to add a identity, gzip, bzip2 or xz as an unpacked directory if src is a local tar archive in a recognized compression format.
+
+✅ If something.gzip is actually a .tar.gz (i.e., a compressed tar archive, just with an unconventional extension), it will be unpacked.
+
+❌ If something.gzip is just a gzipped file, not a .tar.gz, then it won’t be unpacked — it will just be copied as-is.
+
+Example:
+
+- something.tar.gz → unpacked ✅
+
+- something.gzip (if it’s actually tar + gzip) → unpacked ✅
+
+- something.gzip (if it’s just a gzipped single file, like you’d get from gzip file.txt) → not unpacked ❌
+
 ### Container
 
 Containers are `isolated environments` in the host machine that only contain what is required for the application. We can **start**, **stop** and **interact with eachother or the host machine** via `TCP/UDP`.
@@ -677,3 +693,19 @@ redmine:
   depends_on:
     - db
 ```
+
+# Container Best Practices
+
+## Official Images
+
+We can't trust official images 100%.
+
+Docker does keep some [official images](https://github.com/docker-library/official-images), we can also find them on Dockerhub. Many well-known projects are also maintained under [docker library](https://github.com/docker-library), but some are managed by the organisations.
+
+We always read the README file and track the `Dockerfile` the images are created from. To do so, we can:
+
+```bash
+docker image history --no-trunc ubuntu:24.04
+```
+
+and check if image history matches with the directives specified in the Dockerfile.
