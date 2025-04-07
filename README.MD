@@ -709,3 +709,81 @@ docker image history --no-trunc ubuntu:24.04
 ```
 
 and check if image history matches with the directives specified in the Dockerfile.
+
+## Deployment Pipelines
+
+We can create deployment pipelines using
+
+1. [Github actions](https://github.com/features/actions)
+2. [WatchTower]()
+
+### 1. Github Actions
+
+We can define workflows in the **_main.yml_** of the **_.github/workflows_** directory:
+
+```docker
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:  # name of the job
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/beermapping:latest
+```
+
+the `build` in this example is one job that has steps. Each step is a small operation or **_action_** that does part of the whole job.
+
+So the actions are:
+
+1. `actions/checkout@v2` is used to check out the code from the repository
+2. `docker/setup-buildx-action@v1` is used to set up the Dockerx build environment
+3. `docker/login-action@v1` is used to log in to Docker Hub
+4. `docker/build-push-action@v2` is used to build the image and push it to Docker Hub
+
+So after we have pushed the image to dockerhub, somehow we need to see the change and restart the container usning the new image, this is were `watchtower` comes to play.
+
+### 1. WatchTower
+
+Watchtower will pull the source of the image (in this case Docker Hub) for changes in the containers that are running. The container that is running will be updated and automatically restarted when a new version of the image is pushed to Docker Hub. Watchtower respects tags e.g. q container using ubuntu:24.04 will not be updated unless a new version of ubuntu:24.04 is released.
+
+\*\* **Security reminder: Docker Hub accessing our computer** \*\*
+
+Note that now anyone with access to our Docker Hub also has access to our PC through this. If they push a malicious update to our application, Watchtower will happily download and start the updated version.
+
+So this would be the compose file:
+
+```docker
+services:
+  watchtower:
+    image: containrrr/watchtower
+    environment:
+      -  WATCHTOWER_POLL_INTERVAL=60 <em># Poll every 60 seconds</em>
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    container_name: watchtower
+```
+
+One needs to be careful when starting Watchtower with docker compose up, since it will try to update every image running the machine. The [documentation](https://containrrr.dev/watchtower/) describes how this can be prevented.
