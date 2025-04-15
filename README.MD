@@ -765,7 +765,7 @@ So the actions are:
 
 So after we have pushed the image to dockerhub, somehow we need to see the change and restart the container usning the new image, this is were `watchtower` comes to play.
 
-### 1. WatchTower
+### WatchTower
 
 Watchtower will pull the source of the image (in this case Docker Hub) for changes in the containers that are running. The container that is running will be updated and automatically restarted when a new version of the image is pushed to Docker Hub. Watchtower respects tags e.g. q container using ubuntu:24.04 will not be updated unless a new version of ubuntu:24.04 is released.
 
@@ -787,3 +787,36 @@ services:
 ```
 
 One needs to be careful when starting Watchtower with docker compose up, since it will try to update every image running the machine. The [documentation](https://containrrr.dev/watchtower/) describes how this can be prevented.
+
+## Using a non-root user
+
+Because of security concerns, we might want to alter the container's default user. We can achieve this using the `RUN useradd -m appuser` command.
+
+This creates a **user**, then whe can change the user with `USER appuser`. ** **this user does not have access rights to the container's file system** **.
+
+After that, **all commands including** `ENTRYPOINT` and `CMD` will be executed by this user.
+
+### Giving permissions
+
+To give permissions to the user we use `RUN chown appuser .` to give permissions for the current directory. ** **We must do this while we still executing as `root`, so before the `USER` command** **.
+
+The workflow could be as folows:
+
+```docker
+FROM ubuntu:24.04
+
+# ...
+
+WORKDIR /mydir
+
+# create the appuser
+RUN useradd -m appuser
+
+# change the owner of current dir to appuser
+RUN chown appuser .
+
+# now we can change the user
+USER appuser
+
+ENTRYPOINT ["/usr/local/bin/yt-dlp"]
+```
