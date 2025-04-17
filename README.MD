@@ -792,13 +792,13 @@ One needs to be careful when starting Watchtower with docker compose up, since i
 
 Because of security concerns, we might want to alter the container's default user. We can achieve this using the `RUN useradd -m appuser` command.
 
-This creates a **user**, then whe can change the user with `USER appuser`. ** **this user does not have access rights to the container's file system** **.
+This creates a **user**, then whe can change the user with `USER appuser`. \*\* **this user does not have access rights to the container's file system** \*\*.
 
 After that, **all commands including** `ENTRYPOINT` and `CMD` will be executed by this user.
 
 ### Giving permissions
 
-To give permissions to the user we use `RUN chown appuser .` to give permissions for the current directory. ** **We must do this while we still executing as `root`, so before the `USER` command** **.
+To give permissions to the user we use `RUN chown appuser .` to give permissions for the current directory. \*\* **We must do this while we still executing as `root`, so before the `USER` command** \*\*.
 
 The workflow could be as folows:
 
@@ -820,3 +820,14 @@ USER appuser
 
 ENTRYPOINT ["/usr/local/bin/yt-dlp"]
 ```
+
+## Image Size
+
+Image size is important and can be measured with two ways:
+
+1. Time image takes to be **pushed**
+2. Time image takes to be **pulled**
+
+there are a few ways to reduce image size, reducing the number of layers eg. the instructions in the Dockerfile is **NOT** one of them.
+
+A good way of reducing the image size is to **remove unnecessary dependencies**.
