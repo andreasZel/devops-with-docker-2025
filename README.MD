@@ -830,9 +830,36 @@ Image size is important and can be measured with two ways:
 
 there are a few ways to reduce image size, reducing the number of layers eg. the instructions in the Dockerfile is **NOT** one of them.
 
+### Remove unnecessary dependencies
+
 A good way of reducing the image size is to **remove unnecessary dependencies**.
 
 For example to remove node dependencies we can use:
 `rm -rf /var/lib/apt/lists/*`
 
 To remove any packages we dont want we can use `apt-get -y purge`, `apt-get -y autoremove` and `apt-get clean`.
+
+### Use lighter images
+
+We can also reduce image size by using more lightweight images. For example `ubuntu` images are heavier that `alpine` because they provide more features.
+
+### Multi-stage builds
+
+Multi-stage builds are useful when you need some tools just for the build but not for the execution of the image (that is for CMD or ENTRYPOINT). This is an easy way to reduce size in some cases.
+
+To achieve this we make an Image using `FROM` but name it with `AS` keyword. We then write the instructions and use this image name to copy the files from the first stage to the second one with `--from=`. The whole workflow could be described as follows:
+
+```docker
+# the  first stage needs to be given a name
+FROM ruby:3 AS build-stage
+WORKDIR /usr/app
+
+RUN gem install jekyll
+RUN jekyll new .
+RUN jekyll build
+
+# we will now add a new stage
+FROM nginx:1.19-alpine
+
+COPY --from=build-stage /usr/app/_site/ /usr/share/nginx/html
+```
