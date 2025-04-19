@@ -831,3 +831,8 @@ Image size is important and can be measured with two ways:
 there are a few ways to reduce image size, reducing the number of layers eg. the instructions in the Dockerfile is **NOT** one of them.
 
 A good way of reducing the image size is to **remove unnecessary dependencies**.
+
+For example to remove node dependencies we can use:
+`rm -rf /var/lib/apt/lists/*`
+
+To remove any packages we dont want we can use `apt-get -y purge`, `apt-get -y autoremove` and `apt-get clean`.
