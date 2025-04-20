@@ -863,3 +863,9 @@ FROM nginx:1.19-alpine
 
 COPY --from=build-stage /usr/app/_site/ /usr/share/nginx/html
 ```
+
+### Using Scratch image
+
+`Scratch` image is a barebones empty image.
+
+We can use `Scratch` image when we use standalone binaries that don't need shell or libraries to run. **Rust and Go** can be compiled to that so in most cases we can use `scratch` image.
