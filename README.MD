@@ -830,6 +830,8 @@ Image size is important and can be measured with two ways:
 
 there are a few ways to reduce image size, reducing the number of layers eg. the instructions in the Dockerfile is **NOT** one of them.
 
+Making an image **smaller** also makes the container **more secure**, more dependencies open more vunerabilities that might not needed for the application at all.
+
 ### Remove unnecessary dependencies
 
 A good way of reducing the image size is to **remove unnecessary dependencies**.
